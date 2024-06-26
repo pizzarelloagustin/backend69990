@@ -1,19 +1,8 @@
 import { Router } from "express";
 const router = Router();
-import ProductManager from "../classes/prouctManager.js";
+import ProductManager from "../controllers/prouctManager.js";
 
-const managerProducts = new ProductManager("./src/data/products.json");
-
-// Producto prueba
-// addProduct(title, description, code, price, status, stock, category, thumbnails)
-
-const testProduct = async () => {
-    await managerProducts.addProduct("prueba1","prueba1","prueba1",1,true,1,"prueba1",["prueba1","prueba1"]);
-    await managerProducts.addProduct("prueba2","prueba2","prueba2",2,true,2,"prueba2",["prueba2","prueba2"]);
-    await managerProducts.addProduct("prueba3","prueba3","prueba3",3,true,3,"prueba3",["prueba3","prueba3"]);
-}
-testProduct();
-
+const managerProducts = new ProductManager("./src/models/products.json");
 
 router.get("/", (req, res) => {
     const products = async () => {

@@ -1,0 +1,41 @@
+[
+  {
+    "id": 1,
+    "title": "yerba",
+    "description": "para el mate",
+    "code": "1",
+    "price": 10,
+    "status": true,
+    "stock": 1,
+    "category": "almacen",
+    "thumbnails": [
+      "img11",
+      "img12"
+    ]
+  },
+  {
+    "id": 2,
+    "title": "azucar",
+    "description": "para endulzar",
+    "code": "2",
+    "price": 20,
+    "status": true,
+    "stock": 2,
+    "category": "almacen",
+    "thumbnails": [
+      "img21",
+      "img22"
+    ]
+  },
+  {
+    "id": 4,
+    "title": "a",
+    "description": "a",
+    "code": "a",
+    "price": "1",
+    "status": "true",
+    "stock": "1",
+    "category": "aa",
+    "thumbnails": "Sin Imagen"
+  }
+]
