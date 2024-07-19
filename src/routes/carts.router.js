@@ -1,46 +1,44 @@
 import { Router } from "express";
 const router = Router(); 
-import CartManager from "../controllers/cartManager.js";
+import CartModel from "../dao/models/cart.model.js";
+import CartManager from "../dao/db/cart-manager-db.js";
+const cartManager = new CartManager();
 
-const managerCart = new CartManager("./src/models/carts.json");
-
-// Carrito prueba
-// addProduct(products)
-
-const testCart = async () => {
-    await managerCart.addCart([{pid:11,quantity:11},{pid:12,quantity:12}]);
-    await managerCart.addCart([{pid:23,quantity:23},{pid:24,quantity:24}]);
-    await managerCart.addCart([{pid:35,quantity:35},{pid:36,quantity:36}]);
-}
-testCart();
-
-router.post("/", (req, res) => {
-    const add = async () => {
-        let cart = await managerCart.addCart();
-        return res.json(cart);
+router.post("/", async (req, res) => {
+    try {
+        const newCart = await cartManager.addCart();
+        res.json(newCart);
+    } catch (error) {
+        console.log("Error creating cart", error);
+        res.status(500).json({ error: "Error creating cart" });
     }
-    add();
-})
-
-router.get("/:cid", (req, res) => {
-    const searchCart = async () => {
-        let cid = parseInt(req.params.cid);
-        let products = await managerCart.getProductsByCid(cid);
-        return res.json(products);
-    }
-    searchCart();
 });
 
-router.post("/:cid/product/:pid", (req, res) => {
-    const add = async () => {
-        let cid = parseInt(req.params.cid);
-        let pid = parseInt(req.params.pid);
-        let { quantity } = req.body;
-        let q = parseInt(quantity);
-        let product = await managerCart.addProduct(cid,pid,q);
-        return res.json(product);
+router.get("/:cid", async (req, res) => {
+    const cartId = req.params.cid;
+    try {
+        const cart = await CartModel.findById(cartId)
+        if (!cart) {
+            return res.json({ error: "Cart not found" });
+        }
+        return res.json(cart.products);
+    } catch (error) {
+        console.error("Error getting cart", error);
+        res.status(500).json({ error: "Error getting cart" });
     }
-    add();
-})
+});
+
+router.post("/:cid/product/:pid", async (req, res) => {
+    const cartId = req.params.cid;
+    const productId = req.params.pid;
+    const quantity = req.body.quantity || 1;
+    try {
+        const updateCart = await cartManager.addProduct(cartId, productId, quantity);
+        res.json(updateCart.products);
+    } catch (error) {
+        console.error("Error adding/updating product", error);
+        res.status(500).json({ error: "Error adding/updating product" });
+    }
+});
 
 export default router; 
