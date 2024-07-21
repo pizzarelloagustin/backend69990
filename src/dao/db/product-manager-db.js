@@ -13,7 +13,7 @@ class ProductManager {
 
             if (productExist) {
                 console.log("The code must be unique");
-                return;
+                return {messege:"The code must be unique"};
             }
 
             const newProduct = new ProductModel({
@@ -28,7 +28,7 @@ class ProductManager {
             });
 
             await newProduct.save();
-
+            return newProduct;
         } catch (error) {
             console.log("Error:", error);
             throw error;
@@ -102,7 +102,7 @@ class ProductManager {
             const product = await ProductModel.findByIdAndUpdate(pid, updatedProduct);
             if (!product) {
                 console.log("Product not found");
-                return null;
+                return {messege:"Product not found"};
             } else {
                 return {messege:"Product updated"};
             }

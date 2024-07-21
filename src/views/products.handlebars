@@ -11,11 +11,11 @@
 {{/each}}
 
 
-{{#if hasNextPage}}
-    <a href="/products?page={{nextPage}}"> Next </a>
-{{/if}} 
 {{#if hasPrevPage}}
     <a href="/products?page={{prevPage}}"> Before </a>
 {{/if}}
+{{#if hasNextPage}}
+    <a href="/products?page={{nextPage}}"> Next </a>
+{{/if}} 
 
 <p>Page {{currentPage}} of {{totalPages}} </p>

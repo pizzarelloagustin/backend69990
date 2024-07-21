@@ -1,3 +1,4 @@
+import { CommentsController } from "moongose/controller/index.js";
 import CartModel from "../models/cart.model.js";
 
 class CartManager {
@@ -32,14 +33,14 @@ class CartManager {
     async addProduct(cartId, productId, quantity) {
         try {
             const cart = await this.getProductsByCid(cartId);
-            const product = cart.products.find(item => item.product === productId)
+            const product = cart.products.find(item => item.product._id.toString() === productId);
 
             if (product) {
                 product.quantity += quantity;
             } else {
-                product.products.push({ product: productId, quantity });
+                cart.products.push({ product: { _id: productId }, quantity });
             }
-
+            
             cart.markModified("products");
             await cart.save();
             return cart;

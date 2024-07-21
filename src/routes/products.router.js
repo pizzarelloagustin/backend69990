@@ -17,7 +17,7 @@ router.get("/", async (req, res) => {
 
         res.json({
             status: 'success',
-            payload: products,
+            payload: products.docs,
             totalPages: products.totalPages,
             prevPage: products.prevPage,
             nextPage: products.nextPage,
@@ -55,22 +55,11 @@ router.get("/:pid", async (req, res) => {
     }
 });
 
-router.post("/", (req, res) => {
-    const add = async () => {
-        let { title, description, code, price, status, stock, category, thumbnails} = req.body;
-        let product = await productManager.addProduct(title, description, code, price, status, stock, category, thumbnails);
-        return res.json(product);
-    };
-    add();
-});
-
 router.post("/", async (req, res) => {
     const newProduct = req.body;
     try {
-        await productManager.addProduct(newProduct);
-        res.status(201).json({
-            message: "Product added"
-        });
+        const product = await productManager.addProduct(newProduct);
+        res.status(201).json(product);
     } catch (error) {
         console.error("Error adding product:", error);
         res.status(500).json({
@@ -84,10 +73,8 @@ router.put("/:pid", async (req, res) => {
     const updatedProduct = req.body;
 
     try {
-        await productManager.updateProduct(pid, updatedProduct);
-        res.json({
-            message: "Product updatted"
-        });
+        const product = await productManager.updateProduct(pid, updatedProduct);
+        res.json(product);
     } catch (error) {
         console.error("Error updating product", error);
         res.status(500).json({
@@ -96,22 +83,11 @@ router.put("/:pid", async (req, res) => {
     }
 });
 
-router.delete("/:pid", (req, res) => {
-    const del = async () => {
-        let pid = parseInt(req.params.pid);
-        let product = await productManager.deleteProduct(pid);
-        res.json(product);
-    };
-    del();
-});
-
 router.delete("/:pid", async (req, res) => {
     const pid = req.params.pid;
     try {
-        await productManager.deleteProduct(pid);
-        res.json({
-            message: "Product deleted"
-        });
+        const product = await productManager.deleteProduct(pid);
+        res.json(product);
     } catch (error) {
         console.error("Error deleting product", error);
         res.status(500).json({
