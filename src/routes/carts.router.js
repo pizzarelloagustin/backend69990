@@ -28,7 +28,7 @@ router.get("/:cid", async (req, res) => {
     }
 });
 
-router.post("/:cid/product/:pid", async (req, res) => {
+router.put("/:cid/product/:pid", async (req, res) => {
     const cartId = req.params.cid;
     const productId = req.params.pid;
     const quantity = parseInt(req.body.quantity) || 1;
@@ -38,6 +38,41 @@ router.post("/:cid/product/:pid", async (req, res) => {
     } catch (error) {
         console.error("Error adding/updating product", error);
         res.status(500).json({ error: "Error adding/updating product" });
+    }
+});
+
+router.put("/:cid", async (req, res) => {
+    const cartId = req.params.cid;
+    const products = req.body;
+    try {
+        const updateCart = await cartManager.addProducts(cartId, products);
+        res.json(updateCart.products);
+    } catch (error) {
+        console.error("Error adding products", error);
+        res.status(500).json({ error: "Error adding products" });
+    }
+});
+
+router.delete("/:cid/products/:pid", async (req,res) => {
+    const cartId = req.params.cid;
+    const productId = req.params.pid;
+    try {
+        const deletedProduct = await cartManager.deleteProductFromCart(cartId, productId);
+        res.json(deletedProduct);
+    } catch (error) {
+        console.error("Error deleting product from cart", error);
+        res.status(500).json({ error: "Error deleting product from cart" });
+    }
+});
+
+router.delete("/:cid", async (req,res) => {
+    const cartId = req.params.cid;
+    try {
+        const deletedAllProducts = await cartManager.deleteAllProductsFromCart(cartId);
+        res.json(deletedAllProducts);
+    } catch (error) {
+        console.error("Error deleting products from cart", error);
+        res.status(500).json({ error: "Error deleting products from cart" });
     }
 });
 

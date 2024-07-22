@@ -14,7 +14,7 @@ class CartManager {
         }
     }
 
-    async getProductsByCid(cartId) {
+    async getCartById(cartId) {
         try {
             const cart = await CartModel.findById(cartId);
 
@@ -32,7 +32,10 @@ class CartManager {
 
     async addProduct(cartId, productId, quantity) {
         try {
-            const cart = await this.getProductsByCid(cartId);
+            const cart = await this.getCartById(cartId);
+            if (!cart) {
+                return {messege:"Cart not found"};
+            }
             const product = cart.products.find(item => item.product._id.toString() === productId);
 
             if (product) {
@@ -47,6 +50,65 @@ class CartManager {
 
         } catch (error) {
             console.error("Error:", error);
+            throw error;
+        }
+    }
+
+    async addProducts(cartId, products) {
+        try {
+            const cart = await this.getCartById(cartId);
+            if (!cart) {
+                return {messege:"Cart not found"};
+            }
+            
+            products.map((producto) => {
+                cart.products.push(producto);
+            })
+
+            cart.markModified("products");
+            await cart.save();
+            return cart;
+
+        } catch (error) {
+            console.error("Error:", error);
+            throw error;
+        }
+    }
+
+    async deleteProductFromCart(cartId, productId) {
+        try {
+            const cart = await this.getCartById(cartId);
+            if (!cart) {
+                return {messege:"Cart not found"};
+            }
+
+            const index = cart.products.findIndex(item => item.product._id.toString() === productId);
+            if (index === -1) return {messege:"Product in cart not found"};
+            cart.products.splice(index,1)
+            cart.markModified("products");
+            await cart.save();
+            return {messege:"Product in cart deleted"};
+
+        } catch (error) {
+            console.error("Error deleting product in cart", error);
+            throw error;
+        }
+    }
+
+    async deleteAllProductsFromCart(cartId) {
+        try {
+            const cart = await this.getCartById(cartId);
+            if (!cart) {
+                return {messege:"Cart not found"};
+            }
+
+            cart.products.splice(0,cart.products.length);
+            cart.markModified("products");
+            await cart.save();
+            return {messege:"All products in cart deleted"};
+
+        } catch (error) {
+            console.error("Error deleting all products in cart", error);
             throw error;
         }
     }
