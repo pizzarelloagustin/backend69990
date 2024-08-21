@@ -7,7 +7,8 @@ class CartManager {
         try {
             const newCart = new CartModel({ products: [] });
             await newCart.save();
-            return newCart;
+            console.log(newCart)
+            return newCart._id;
         } catch (error) {
             console.log("Error creating cart", error);
             throw error;
